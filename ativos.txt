@@ -5,3 +5,10 @@ Responsável: MMLMM
 Setor: TOMT
 Tipo: NOTEBOOK
 -----------------------------
+
+ID: 2
+Hostname: LUCA12309D
+Responsável: LUCAS
+Setor: 1E
+Tipo: NOTEBOOK
+-----------------------------
