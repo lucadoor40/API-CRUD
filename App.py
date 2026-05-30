@@ -123,7 +123,7 @@ def criar_ativo():
     if not dados.get("setor"):
         return jsonify({"erro": "setor obrigatório"}), 400
 
-    # cria ativo
+    # CRIA ATIVO
     novo = Ativo(
         hostname=dados.get("hostname"),
         responsavel=dados.get("responsavel"),
@@ -229,7 +229,6 @@ def listar_vuln(id):
         }
         for v in ativo.vulnerabilidades
     ])
-
 
 # RUN
 
