@@ -10,12 +10,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# 🔥 HASH MAP (ITEM 9 DO TRABALHO)
+#  HASH MAP
 ativos_cache = {}
 
-# =====================
 # ENUMS
-# =====================
 
 class TipoAtivo(Enum):
     NOTEBOOK = "NOTEBOOK"
@@ -38,10 +36,7 @@ class Status(Enum):
     TRATADO = "tratado"
     ACEITO = "aceito"
 
-
-# =====================
 # MODELOS
-# =====================
 
 class Ativo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -95,14 +90,11 @@ class Vulnerabilidade(db.Model):
     ativo_id = db.Column(db.Integer, db.ForeignKey('ativo.id'))
 
 
-# cria banco
+# CRIA BANCO
 with app.app_context():
     db.create_all()
 
-
-# =====================
 # FUNÇÃO ARQUIVO TXT
-# =====================
 
 def salvar_em_arquivo(ativo):
     with open("ativos.txt", "a", encoding="utf-8") as f:
@@ -115,10 +107,7 @@ Tipo: {ativo.tipo_ativo}
 -----------------------------
 """)
 
-
-# =====================
 # ROTAS ATIVOS
-# =====================
 
 @app.route('/ativos', methods=['POST'])
 def criar_ativo():
@@ -134,7 +123,7 @@ def criar_ativo():
     if not dados.get("setor"):
         return jsonify({"erro": "setor obrigatório"}), 400
 
-    # cria ativo
+    # CRIA ATIVO
     novo = Ativo(
         hostname=dados.get("hostname"),
         responsavel=dados.get("responsavel"),
@@ -145,10 +134,10 @@ def criar_ativo():
     db.session.add(novo)
     db.session.commit()
 
-    # 🔥 SALVA NO DICT (ITEM 9)
+    #  SALVA NO DICT
     ativos_cache[novo.id] = novo.to_dict()
 
-    # 🔥 SALVA EM ARQUIVO (ITEM 3)
+    #  SALVA EM ARQUIVO
     salvar_em_arquivo(novo)
 
     return jsonify({
@@ -196,10 +185,7 @@ def deletar_ativo(id):
 
     return jsonify({"msg": "removido"})
 
-
-# =====================
 # VULNERABILIDADES
-# =====================
 
 @app.route('/vulnerabilidades', methods=['POST'])
 def criar_vuln():
@@ -244,10 +230,7 @@ def listar_vuln(id):
         for v in ativo.vulnerabilidades
     ])
 
-
-# =====================
 # RUN
-# =====================
 
 if __name__ == "__main__":
     app.run(debug=True)
