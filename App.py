@@ -38,7 +38,7 @@ class Status(Enum):
 
 # MODELOS
 
-class Ativo(db.Model):
+class Equipamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     hostname = db.Column(db.String(100), nullable=False)
