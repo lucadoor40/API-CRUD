@@ -1,9 +1,10 @@
-version: "3.9"
+@'
 version: "3.9"
 
 services:
   teste-uptime:
     image: alpine:latest
     container_name: teste-uptime
-    command: ["sh", "-c", "echo 'Container iniciado em:'; date; while true; do sleep 3600; echo \"Ainda vivo em: $$(date)\"; done"]
+    command: ["sh", "-c", "echo 'Container iniciado em:'; date; while true; do sleep 3600; echo \"Ainda vivo em: $(date)\"; done"]
     restart: always
+'@ | Out-File -FilePath docker-compose.teste-uptime.yml -Encoding utf8
