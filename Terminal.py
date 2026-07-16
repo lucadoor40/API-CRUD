@@ -1,6 +1,6 @@
 import requests
 
-from App import TipoAtivo, Severidades, Status
+from app import TipoAtivo, Severidades, Status
 from utils import escolher_enum
 
 
