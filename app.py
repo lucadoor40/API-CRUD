@@ -87,7 +87,8 @@ class Vulnerabilidade(db.Model):
     severidade = db.Column(db.String(50), nullable=False)
     status = db.Column(db.String(50), nullable=False)
 
-    ativo_id = db.Column(db.Integer, db.ForeignKey('ativo.id'))
+    # CORRIGIDO: apontava para 'ativo.id', mas a tabela agora é 'equipamento'
+    ativo_id = db.Column(db.Integer, db.ForeignKey('equipamento.id'))
 
 
 # CRIA BANCO
@@ -123,8 +124,8 @@ def criar_ativo():
     if not dados.get("setor"):
         return jsonify({"erro": "setor obrigatório"}), 400
 
-    # CRIA ATIVO
-    novo = Ativo(
+    # CRIA ATIVO (CORRIGIDO: era Ativo(...), agora Equipamento(...))
+    novo = Equipamento(
         hostname=dados.get("hostname"),
         responsavel=dados.get("responsavel"),
         setor=dados.get("setor"),
@@ -153,7 +154,8 @@ def listar_ativos():
 
 @app.route('/ativos/<int:id>', methods=['PUT'])
 def atualizar_ativo(id):
-    ativo = Ativo.query.get(id)
+    # CORRIGIDO: era Ativo.query.get(id)
+    ativo = Equipamento.query.get(id)
 
     if not ativo:
         return jsonify({"erro": "não encontrado"}), 404
@@ -173,7 +175,8 @@ def atualizar_ativo(id):
 
 @app.route('/ativos/<int:id>', methods=['DELETE'])
 def deletar_ativo(id):
-    ativo = Ativo.query.get(id)
+    # CORRIGIDO: era Ativo.query.get(id)
+    ativo = Equipamento.query.get(id)
 
     if not ativo:
         return jsonify({"erro": "não encontrado"}), 404
@@ -202,8 +205,8 @@ def criar_vuln():
     db.session.add(vuln)
     db.session.commit()
 
-    # atualiza cache do ativo
-    ativo = Ativo.query.get(dados.get("ativo_id"))
+    # atualiza cache do ativo (CORRIGIDO: era Ativo.query.get(...))
+    ativo = Equipamento.query.get(dados.get("ativo_id"))
     if ativo:
         ativos_cache[ativo.id] = ativo.to_dict()
 
@@ -212,7 +215,8 @@ def criar_vuln():
 
 @app.route('/vulnerabilidades/<int:id>', methods=['GET'])
 def listar_vuln(id):
-    ativo = Ativo.query.get(id)
+    # CORRIGIDO: era Ativo.query.get(id)
+    ativo = Equipamento.query.get(id)
 
     if not ativo:
         return jsonify({"erro": "não encontrado"}), 404
@@ -230,7 +234,13 @@ def listar_vuln(id):
         for v in ativo.vulnerabilidades
     ])
 
+# HEALTHCHECK (necessário para o healthcheck do Docker funcionar)
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"status": "ok"})
+
 # RUN
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
